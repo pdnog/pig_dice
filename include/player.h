@@ -4,10 +4,12 @@
 #include "dice.h"
 #include <string>
 
+using namespace std;
+
 struct Player{
-	std::string name;
-	FaceType score_total;
-	FaceType current_score;
+	string name;
+	FaceType pontosTotal;
+	FaceType pontosTurno;
 };
 
 Player initialize_player();

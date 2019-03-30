@@ -2,8 +2,7 @@
 #define _DICE_H_
 
 #include <random>
-#include <time>
-
+//#include <time>
 ///  Dice face type
 using FaceType = unsigned short;
 

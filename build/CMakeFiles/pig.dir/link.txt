@@ -1,0 +1,1 @@
+/usr/bin/c++    -rdynamic CMakeFiles/pig.dir/src/main.o CMakeFiles/pig.dir/src/dice.o CMakeFiles/pig.dir/src/pig_dice.o CMakeFiles/pig.dir/src/player.o  -o pig 
