@@ -1,87 +1,99 @@
-#include <iostream>
-
 #include "../include/pig_dice.h"
-#include "../include/player.h"
-#include "../include/dice.h"
 
+GameState initialize_game_state(){
+	GameState gst;
 
+	gst.player1 = initialize_player();
+	gst.player2 = initialize_player();
+	gst.current_player = gst.player1;
 
-bool gameover(GameState &gst ){
-	return gst.player1.pontosTotal>=100 || gst.player2.pontosTotal>=100 ;
+	return gst;
 }
 
-void inicializar( GameState &gst ){
-	 gst.player1.pontosTotal = 0;
-	 gst.player2.pontosTotal = 0;
-	 gst.player1.pontosTurno = 0;
-	 gst.player2.pontosTurno = 0;
-	 gst.playerAtual = gst.player1;
+void render_welcome_message(){
+	cout << "Bem vindo ao PIG DICE GAME" << endl;
+	//colocar regras
 }
 
-bool compararPlayer(Player player1, Player player2){
-	if(player1.name == player2.name){
-		return true;
-	}else 
-	return false;
-}
+bool next_action(){
+	
+	char action;
+	cout << "\nDigite 'J' para jogar o dado ou 'P' para passar a vez\n";
+	cin >> action;
 
-void processarEventos(GameState &gst){
-	acao acaoTurno = decidirAcao();
-	if(compararPlayer(gst.player1, gst.playerAtual)){
-		gst.playerAtual = gst.player1;
-		
+	if(action == 'j' || action == 'J'){
+		return roll;
 	}
-	if(acaoTurno == jogar){
-		FaceType dado = roll_dice(6);
-		if(dado == 1){
-			cout << "DEU PIG!!";
-			gst.playerAtual.pontosTurno = 0;
-			gst.acao = passar;
+	else if(action == 'p' || action == 'P'){
+		return hold;
+	}
+	else {
+		cout << "Opcao invalida\n";
+		return next_action();
+	}
+}
+
+void process_events(GameState &gst){
+
+	gst.action = next_action();
+
+	if(gst.action==roll){
+		FaceType dice = roll_dice(6);
+		
+		if(dice == 1){
+			cout << "\nDEU PIG!" << endl;
+			gst.current_player.turn_score = 0;
+			gst.action = hold;
 		}
 		else{
-			cout << "Dado caiu: " << dado << endl;
-			cout << "Pontos do turno:" << gst.playerAtual.pontosTurno + dado << endl;
-			gst.playerAtual.pontosTurno += dado;
+			gst.current_player.turn_score += dice;
+
+			cout << "\nDado caiu: " << dice << endl;
+			cout << "Pontos do turno:" << gst.current_player.turn_score << endl;
 		}
-	}else{
-		gst.acao = passar;
 	}
 }
 
 void update(GameState &gst){
-	if(gst.acao == passar){
-		gst.playerAtual.pontosTotal += gst.playerAtual.pontosTurno;
-		if(compararPlayer(gst.playerAtual, gst.player1)){
-			gst.player1 = gst.playerAtual;
-			gst.playerAtual = gst.player2;
-
-		}else{
-			gst.player2 = gst.playerAtual;
-			gst.playerAtual = gst.player1;
-			
+	if(gst.action==hold){
+		gst.current_player.total_score += gst.current_player.turn_score;
+		
+		if(compare_player(gst.current_player, gst.player1)){
+			gst.player1 = gst.current_player;
+			gst.current_player = gst.player2;
+		}
+		else{
+			gst.player2 = gst.current_player;
+			gst.current_player = gst.player1;
 		}
 	}
 }
 
-void  renderWelcome(GameState &gst){
-	cout << "Bem vindo ao PIG DICE GAME" << endl;
+void render_state_game(GameState &gst){
+	cout << "\nVez de: " << gst.current_player.name << endl;
+	cout << gst.player1.name << " tem " << gst.player1.total_score << " pontos" << endl;
+	cout << gst.player2.name << " tem " << gst.player2.total_score << " pontos" << endl;
 }
 
-void renderStateGame(GameState &gst){
-	cout << "\nVez de: " << gst.playerAtual.name << endl;
-	cout << gst.player1.name << " tem " << gst.player1.pontosTotal << " pontos" << endl;
-	cout << gst.player2.name << " tem " << gst.player2.pontosTotal << " pontos" << endl;
+bool gameover(GameState &gst){
+	if(gst.player1.total_score>=100)
+		gst.winner = gst.player1;
+	else if(gst.player2.total_score>=100)
+		gst.winner = gst.player2;
+	else
+		return false;
+
+	return true;
 }
 
-bool decidirAcao(){
-	acao acaoTurno;
-	string a;
-	cout << "Digite J para jogar e P para passar \n";
-	cin >> a;
-	if(a == "j"){
-		acaoTurno = jogar;
-	}else{
-		acaoTurno = passar;
-	}
-	return acaoTurno; 
+void render_winner_message(GameState &gst){
+	cout << "\nO ganhador foi " << gst.winner.name << " com " << gst.winner.total_score << " pontos" << endl;
+	cout << "Parabens!" << endl;
+}
+
+bool compare_player(Player player1, Player player2){
+	if(player1.name == player2.name)
+		return true;
+	else 
+		return false;
 }

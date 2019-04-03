@@ -3,8 +3,12 @@
 Player initialize_player(){
 	
 	Player player;
-	player.pontosTotal = 0;
-	player.pontosTurno = 0;
+
+	cout << "Nome do jogador: ";
+	cin >> player.name;
+
+	player.total_score = 0;
+	player.turn_score = 0;
 
 	return player;
 }
