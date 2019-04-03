@@ -3,9 +3,9 @@
 GameState initialize_game_state(){
 	GameState gst;
 
-	gst.player1 = initialize_player();
-	gst.player2 = initialize_player();
-	gst.current_player = gst.player1;
+	gst.player = initialize_player();
+	gst.ia = initialize_player("computador");
+	gst.current_player = gst.player;
 
 	return gst;
 }
@@ -34,8 +34,19 @@ bool next_action(){
 }
 
 void process_events(GameState &gst){
+	if(compare_player(gst.current_player, gst.player)){
+		gst.action = next_action();
+	}
+	else{
+		gst.action = next_action_ia();
 
-	gst.action = next_action();
+		sleep(1); //pausa 1 segundo
+		
+		if(gst.action)
+			cout << "\nAcao: jogar dado" << endl;
+		else
+			cout << "\nAcao: passar a vez" << endl;
+	}
 
 	if(gst.action==roll){
 		FaceType dice = roll_dice(6);
@@ -58,28 +69,28 @@ void update(GameState &gst){
 	if(gst.action==hold){
 		gst.current_player.total_score += gst.current_player.turn_score;
 		
-		if(compare_player(gst.current_player, gst.player1)){
-			gst.player1 = gst.current_player;
-			gst.current_player = gst.player2;
+		if(compare_player(gst.current_player, gst.player)){
+			gst.player = gst.current_player;
+			gst.current_player = gst.ia;
 		}
 		else{
-			gst.player2 = gst.current_player;
-			gst.current_player = gst.player1;
+			gst.ia = gst.current_player;
+			gst.current_player = gst.player;
 		}
 	}
 }
 
 void render_state_game(GameState &gst){
 	cout << "\nVez de: " << gst.current_player.name << endl;
-	cout << gst.player1.name << " tem " << gst.player1.total_score << " pontos" << endl;
-	cout << gst.player2.name << " tem " << gst.player2.total_score << " pontos" << endl;
+	cout << gst.player.name << " tem " << gst.player.total_score << " pontos" << endl;
+	cout << gst.ia.name << " tem " << gst.ia.total_score << " pontos" << endl;
 }
 
 bool gameover(GameState &gst){
-	if(gst.player1.total_score>=100)
-		gst.winner = gst.player1;
-	else if(gst.player2.total_score>=100)
-		gst.winner = gst.player2;
+	if(gst.player.total_score>=100)
+		gst.winner = gst.player;
+	else if(gst.ia.total_score>=100)
+		gst.winner = gst.ia;
 	else
 		return false;
 
@@ -88,7 +99,6 @@ bool gameover(GameState &gst){
 
 void render_winner_message(GameState &gst){
 	cout << "\nO ganhador foi " << gst.winner.name << " com " << gst.winner.total_score << " pontos" << endl;
-	cout << "Parabens!" << endl;
 }
 
 bool compare_player(Player player1, Player player2){

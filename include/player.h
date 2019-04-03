@@ -18,4 +18,11 @@ struct Player{
  */
 Player initialize_player();
 
+/// Initialize a player
+/*!
+ * @param name The player's name
+ * @return A new player
+ */
+Player initialize_player(string name);
+
 #endif

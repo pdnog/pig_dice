@@ -12,3 +12,13 @@ Player initialize_player(){
 
 	return player;
 }
+
+Player initialize_player(string name){
+	Player player;
+
+	player.name = name;
+	player.total_score = 0;
+	player.turn_score = 0;
+
+	return player;
+}

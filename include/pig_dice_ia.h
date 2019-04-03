@@ -1,7 +1,13 @@
 #ifndef _PIG_DICE_IA_H_
 #define _PIG_DICE_IA_H_
 
-#include "pig_dice.h"
+#include "player.h"
+
+using Action = bool;
+
+#define hold false
+
+#define roll true
 
 /// The next action of the IA
 /*!

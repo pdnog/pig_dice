@@ -1,18 +1,13 @@
 #ifndef _PIG_DICE_H_
 #define _PIG_DICE_H_
 
-#include "player.h"
-
-using Action = bool;
-
-#define hold false
-
-#define roll true
+#include "pig_dice_ia.h"
+#include <unistd.h> // sleep
 
 /// A structure to represent the game state
 struct GameState{
-	Player player1; //< The first player
-    Player player2; //< The second player
+	Player player; //< The first player
+    Player ia; //< The second player
 	Player current_player; //< The turn's player
 	Player winner; //< The winner
     Action action; //< The action of the turn's player
