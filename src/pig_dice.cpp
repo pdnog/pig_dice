@@ -71,10 +71,12 @@ void update(GameState &gst){
 		
 		if(compare_player(gst.current_player, gst.player)){
 			gst.player = gst.current_player;
+			gst.player.turn_score=0;
 			gst.current_player = gst.ia;
 		}
 		else{
 			gst.ia = gst.current_player;
+			gst.ia.turn_score=0;
 			gst.current_player = gst.player;
 		}
 	}
