@@ -60,10 +60,12 @@ void update(GameState &gst){
 		
 		if(compare_player(gst.current_player, gst.player1)){
 			gst.player1 = gst.current_player;
+			gst.player1.turn_score = 0;
 			gst.current_player = gst.player2;
 		}
 		else{
 			gst.player2 = gst.current_player;
+			gst.player2.turn_score = 0;
 			gst.current_player = gst.player1;
 		}
 	}
